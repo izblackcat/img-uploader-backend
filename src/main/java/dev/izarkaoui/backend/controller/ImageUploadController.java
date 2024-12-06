@@ -85,21 +85,18 @@ public class ImageUploadController {
     }
 
     @GetMapping("/images")
-    public ResponseEntity<Map<String, String>> getAllImages() {
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<List<String>> getAllImages() {
         try {
             Path dirPath = Paths.get(uploadDirectory);
             log.info("dirPath : {}", dirPath);
             List<String> imageList = Files.list(dirPath)
                     .filter(Files::isRegularFile)
                     .map(path -> path.getFileName().toString())
-                    .toList();
-//            log.info("image list == {}", imageList);
-            response.put("message", imageList.toString());
-            return ResponseEntity.ok(response);
+                    .collect(Collectors.toList());
+            log.info("image list == {}", imageList);
+            return ResponseEntity.ok(imageList);
         } catch (IOException e) {
-            response.put("internalServerError", "UPLOAD_DIR not found!");
-            return ResponseEntity.internalServerError().body(response);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
     }
