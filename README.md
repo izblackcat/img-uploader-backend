@@ -4,4 +4,3 @@ This is the backend of the `img-uploader` mini-project which I separated in a si
 
 - [x] Add Dockerfile
 - [ ] Deploy on Render
-- [ ] 
