@@ -1,13 +1,18 @@
-FROM maven:3.8.5-openjdk-17 AS build
+FROM maven:3.8.5-openjdk-17-slim AS build
 
-COPY . .
+WORKDIR /app
+
+COPY pom.xml ./
+
+COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17.0.1-jdk-slim 
-COPY --from=build /target/backend-0.0.1-SNAPSHOT.jar backend.jar
+FROM eclipse-temurin:17-jre-alpine
 
-ENV UPLOAD_DIR="UPLOAD"
+COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar backend.jar
+
+ENV UPLOAD_DIR=${UPLOAD_DIR:-UPLOAD}
 
 EXPOSE 8080
 
